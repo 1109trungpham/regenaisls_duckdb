@@ -1,0 +1,6 @@
+venv
+test
+__pycache__/
+.env
+init.sh
+.DS_Store
