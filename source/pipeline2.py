@@ -7,44 +7,49 @@ import pandas as pd
 import duckdb
 from datetime import datetime
 
-input_folder = "raw_data"
-output_folder = "parquet_data"
-os.makedirs(output_folder, exist_ok=True)
+def merge_json_into_parquet(input_json_folder: str, output_parquet_folder:str):
+    for filename in os.listdir(input_json_folder):
+        if filename.endswith(".json"):
+            file_path = os.path.join(input_json_folder, filename)
+            
+            with open(file_path, "r", encoding="utf-8") as f:
+                raw = json.load(f)
 
-time_start = datetime.now()
+            header = raw['data'][0]['header']
+            values = []
+            for location_ in raw['data']:
+                for row in location_['value']:
+                    values.append(row)
+            df = pd.DataFrame(data=values, columns=header)
 
-for filename in os.listdir(input_folder):
-    if filename.endswith(".json"):
-        file_path = os.path.join(input_folder, filename)
-        
-        with open(file_path, "r", encoding="utf-8") as f:
-            raw = json.load(f)
+            parquet_path = os.path.join(output_parquet_folder, filename.replace(".json", ".parquet"))
+            df.to_parquet(parquet_path, index=False)
+            print(f"✅ Đã chuyển {filename} → {parquet_path}")
+    return None
 
-        header = raw['data'][0]['header']
-        values = []
-        for location_ in raw['data']:
-            for row in location_['value']:
-                values.append(row)
-        df = pd.DataFrame(data=values, columns=header)
+def main():
+    input_json_folder = "raw_data"
+    output_parquet_folder = "parquet_data"
+    os.makedirs(output_parquet_folder, exist_ok=True)
 
-        # Xuất ra file Parquet với tên tương ứng
-        parquet_path = os.path.join(output_folder, filename.replace(".json", ".parquet"))
-        df.to_parquet(parquet_path, index=False)
-        print(f"✅ Đã chuyển {filename} → {parquet_path}")
+    time_start = datetime.now()
+    merge_json_into_parquet(input_json_folder, output_parquet_folder)
 
+    query = f"""
+    SELECT year, AVG(t2m_max) AS avg_max_temp, SUM(precipitation) AS total_precip
+    FROM PARQUET_SCAN('{output_parquet_folder}/*.parquet')
+    GROUP BY year
+    ORDER BY year;
+    """
+    con = duckdb.connect()
+    result = con.sql(query).df()
+    con.close()
+    time_end = datetime.now()
 
-con = duckdb.connect()
-query = """
-SELECT year, AVG(t2m_max) AS avg_max_temp, SUM(precipitation) AS total_precip
-FROM PARQUET_SCAN('parquet_data/*.parquet')
-GROUP BY year
-ORDER BY year;
-"""
+    print(f'Mất: {(time_end - time_start).seconds + ((time_end - time_start).microseconds) / 1000000}s')
+    print(result)
+    return None
 
-result = con.sql(query).df()
-print(result.head())
+if __name__=="__main__":
+    main()
 
-con.close()
-time_end = datetime.now()
-
-print(f'Mất: {(time_end - time_start).seconds + ((time_end - time_start).microseconds) / 1000000}s')
