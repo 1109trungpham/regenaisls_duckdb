@@ -137,7 +137,7 @@ def move_all_files(src_folder, dest_folder):
             except Exception as e:
                 print(f"Lỗi khi chuyển {src_path}: {e}")
 
-def delete_all_files_in_directory(directory_path):
+def delete_all_files(directory_path):
     if not os.path.isdir(directory_path):
         print(f"'{directory_path}' không phải là một thư mục hợp lệ.")
         return
@@ -157,12 +157,15 @@ def main():
     new_json_folder = "new_data"    # Thư mục chứa các tệp JSON mới
     output_parquet_folder = "parquet_data"
     output_duckdb_folder = "database"
+    charts_folder = "charts"
     database_name = "weather_data_database"
     table_name = "weather_data_table"
     output_duckdb_file = os.path.join(output_duckdb_folder, f"{database_name}.duckdb")
 
+    os.makedirs(raw_json_folder, exist_ok=True)
     os.makedirs(output_parquet_folder, exist_ok=True)
     os.makedirs(output_duckdb_folder, exist_ok=True)
+    os.makedirs(charts_folder, exist_ok=True)
 
     time_start = datetime.now()
 
@@ -200,7 +203,7 @@ def main():
     if status:
         print()
         move_all_files(new_json_folder, raw_json_folder)
-        delete_all_files_in_directory(output_parquet_folder)
+        delete_all_files(output_parquet_folder)
 
     return None
 
