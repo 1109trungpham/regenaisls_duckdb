@@ -7,7 +7,7 @@ import pandas as pd
 import duckdb
 from datetime import datetime
 
-def merge_json_into_parquet(input_json_folder: str, output_parquet_folder:str):
+def convert_json_to_parquet(input_json_folder: str, output_parquet_folder:str):
     for filename in os.listdir(input_json_folder):
         if filename.endswith(".json"):
             file_path = os.path.join(input_json_folder, filename)
@@ -33,7 +33,7 @@ def main():
     os.makedirs(output_parquet_folder, exist_ok=True)
 
     time_start = datetime.now()
-    merge_json_into_parquet(input_json_folder, output_parquet_folder)
+    convert_json_to_parquet(input_json_folder, output_parquet_folder)
 
     query = f"""
     SELECT year, AVG(t2m_max) AS avg_max_temp, SUM(precipitation) AS total_precip

@@ -1,6 +1,6 @@
 venv
 test
-__pycache__/
+source/__pycache__/
 .env
 init.sh
 .DS_Store

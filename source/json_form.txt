@@ -1,0 +1,13 @@
+{
+  "duration": 51.23,
+  "data": [
+    {
+      "header": ["day", "month", "year", "day_of_year", "t2m_max", "t2m_min", "precipitation"],
+      "value": [
+        [1, 1, 1990, 1, 10.5, 2.1, 0.0],
+        [2, 1, 1990, 2, 11.2, 3.0, 5.3]
+      ],
+      "location": [-118.2437, 34.0522]
+    }
+  ]
+}
