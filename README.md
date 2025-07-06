@@ -10,22 +10,38 @@
 ├── source/                   # Mã nguồn xử lý dữ liệu
 │   ├── json_creator.py
 │   ├── json_form.txt
-│   ├── parquet_schema.py
 │   ├── pipeline1.py
 │   ├── pipeline2.py
 │   ├── pipeline2p1.py
 │   ├── pipeline2p2.py
-│   ├── wt_data.json
-│   └── wt_data.parquet
+│   └── wt_data.json
 ├── .gitignore
-├── main.py                
+├── main.py
+├── src1.py   
+├── src2.py             
 ├── README.md              
 └── requirements.txt         
 
 
 pip install duckdb
+pip install fastapi uvicorn httpx
+pip install python-multipart
+pip install great-expectations
 
-Chạy json_creator.py để tạo nguồn dữ liệu
 
-# Hiệu suất
-Pipe2 nhanh hơn Pipe1 khoảng 1s khi xử lý 500MB JSON
+#=====================================================================================================
+#======================================== ETL Pipeline ===============================================
+#=====================================================================================================
+
+uvicorn main:app --reload
+(thử nghiệm API với src1 và src2)
+
+Tạo dữ liệu:
+- python source/json_creator.py
+
+Nạp dữ liệu:
+- http://localhost:8000/docs
+
+Xem biểu đồ:
+- http://localhost:8000/chart
+

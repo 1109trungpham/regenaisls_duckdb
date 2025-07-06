@@ -12,7 +12,6 @@ import shutil
 import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
 import seaborn as sns
-from datetime import datetime
 
 def convert_json_to_parquet(new_json_folder: str, output_parquet_folder:str):
 

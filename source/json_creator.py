@@ -3,7 +3,7 @@ import os
 
 
 source_file = "source/wt_data.json"
-target_folder = "new_data/"
+target_folder = "new_data"
 
 if not os.path.exists(target_folder):
     os.makedirs(target_folder)
